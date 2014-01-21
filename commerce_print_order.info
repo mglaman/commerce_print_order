@@ -1,0 +1,5 @@
+name = Commerce Print Order
+description = "Provides a method for printing off orders"
+package = Commerce (contrib)
+core = 7.x
+

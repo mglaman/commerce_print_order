@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Adds Print Orders VBO action and printer friendly View
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function commerce_print_order_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'commerce_print_order') . '/includes/views',
+  );
+}
+
+/**
+ * Implements hook_action_info().
+ */
+function commerce_print_order_action_info() {
+  return array(
+    'commerce_print_order_view_print' => array(
+      'type' => 'commerce_order',
+      'label' => t('Print orders'),
+      'aggregate' => TRUE,
+      'configurable' => FALSE,
+      'hooks' => array(),
+      'triggers' => array('any'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_preprocess_views_view().
+ */
+function commerce_print_order_preprocess_views_view($vars){
+  $view = $vars['view'];
+
+  if ($view-> name == 'commerce_print_orders' && !isset($view->preview)) {
+     drupal_add_js(drupal_get_path('module', 'commerce_print_order') . '/theme/commerce-print-order.js');
+     drupal_add_css(drupal_get_path('module', 'commerce_print_order') . '/theme/commerce-print-order.css');
+  }
+}
+
+
+function commerce_print_order_view_print($commerce_orders, $context = array()) {
+  //View path
+  $base_url = 'admin/commerce/orders/print/';
+  //Pass contextual filter
+  $arguments = implode(',', array_keys($commerce_orders));
+  //Send it off
+  drupal_goto($base_url . $arguments);
+}
